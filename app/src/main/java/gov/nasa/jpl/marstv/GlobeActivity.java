@@ -15,10 +15,11 @@
 package gov.nasa.jpl.marstv;
 
 import android.app.Activity;
-import android.os.Bundle;
+import android.opengl.GLSurfaceView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+
 
 /*
  * MainActivity class that loads MainFragment
@@ -26,9 +27,11 @@ import org.androidannotations.annotations.EActivity;
 @EActivity(R.layout.activity_globe)
 public class GlobeActivity extends Activity {
 
+    private GLSurfaceView mGLSurfaceView;
 
     @AfterViews
     void init() {
 
     }
+
 }

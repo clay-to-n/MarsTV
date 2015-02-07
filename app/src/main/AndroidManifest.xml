@@ -17,21 +17,36 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Leanback" >
+
         <activity
-            android:name=".GlobeActivity"
+            android:name=".GlobeActivity_"
             android:icon="@drawable/app_icon_your_company"
             android:label="@string/app_name"
             android:logo="@drawable/app_icon_your_company"
             android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsActivity" />
-        <activity android:name=".PlaybackOverlayActivity" />
-        <activity android:name=".BrowseErrorActivity" />
+
+        <activity
+            android:name=".RegionActivity"
+            android:label="@string/title_activity_region"
+            android:parentActivityName=".GlobeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nasa.jpl.marstv.GlobeActivity" />
+        </activity>
+
+        <activity
+            android:name=".SurfaceActivity"
+            android:label="@string/title_activity_surface"
+            android:parentActivityName=".RegionActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nasa.jpl.marstv.RegionActivity" />
+        </activity>
     </application>
 
 </manifest>
