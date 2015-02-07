@@ -1,7 +1,10 @@
 package gov.nasa.jpl.marstv;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -9,33 +12,21 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
 @EActivity(R.layout.activity_surface)
-public class SurfaceActivity extends ActionBarActivity {
+public class SurfaceActivity extends Activity {
 
     @AfterViews
     void init() {
 
     }
 
-    // We probably don't need any options, and we also could use annotations for these if we did
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_surface, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //return super.onKeyDown(keyCode, event);
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BUTTON_A) {
+            Intent intent = new Intent(this, RegionActivity_.class);
+            startActivity(intent);
             return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        return super.onKeyDown(keyCode, event);
     }
 }

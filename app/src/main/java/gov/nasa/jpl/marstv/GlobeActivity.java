@@ -17,8 +17,15 @@ package gov.nasa.jpl.marstv;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.InputDevice;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -27,16 +34,20 @@ import org.androidannotations.annotations.EActivity;
 /*
  * MainActivity class
  */
-@EActivity(R.layout.activity_globe)
+@EActivity
 public class GlobeActivity extends Activity {
 
     /** Hold a reference to our GLSurfaceView */
     private GLSurfaceView mGLSurfaceView;
 
-    @AfterViews
-    void init() {
-        System.out.println("hello tv");
+    private Dpad mDpad;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         mGLSurfaceView = new GLSurfaceView(this);
+        mDpad = new Dpad();
 
         // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -44,10 +55,10 @@ public class GlobeActivity extends Activity {
         final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
 
         System.out.println(configurationInfo.reqGlEsVersion);
-//        if (supportsEs2)
-        if (true)
+        if (supportsEs2)
         {
-            System.out.println("hello tv2");
+            Log.e("GlobeActivity", "we have OpenGL?");
+
             // Request an OpenGL ES 2.0 compatible context.
             mGLSurfaceView.setEGLContextClientVersion(2);
 
@@ -56,12 +67,14 @@ public class GlobeActivity extends Activity {
         }
         else
         {
+            Log.e("GlobeActivity", "Incompatible OpenGL");
 
             System.out.println("OO NOOO");
             // This is where you could create an OpenGL ES 1.x compatible
             // renderer if you wanted to support both ES 1 and ES 2.
             return;
         }
+        setContentView(mGLSurfaceView);
 
     }
 
@@ -80,5 +93,19 @@ public class GlobeActivity extends Activity {
         // The activity must call the GL surface view's onPause() on activity onPause().
         super.onPause();
         mGLSurfaceView.onPause();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BUTTON_A) {
+            Log.e("GlobeActivity", "A PRESSED DOWN");
+            Intent intent = new Intent(this, RegionActivity_.class);
+            startActivity(intent);
+            return true;
+        }
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BUTTON_B) {
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
