@@ -25,6 +25,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import org.androidannotations.annotations.EActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,11 +79,15 @@ public class GlobeActivity extends Activity {
 
                 json = new String(buffer, "UTF-8");
 
-                System.out.println(json);
+                JSONObject actualjson = new JSONObject(json);
+
+                System.out.println(actualjson);
 
 
             } catch (IOException ex) {
                 ex.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
             // Set the renderer to our demo renderer, defined below.
