@@ -15,7 +15,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created by mrComputer on 2/7/15.
  */
-public class LessonOneRenderer implements GLSurfaceView.Renderer {
+public class GlobeRenderer implements GLSurfaceView.Renderer {
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
@@ -69,7 +69,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public LessonOneRenderer()
+    public GlobeRenderer()
     {
         // Define points for equilateral triangles.
 
