@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
-
 @EActivity(R.layout.activity_surface)
 public class SurfaceActivity extends ActionBarActivity {
 

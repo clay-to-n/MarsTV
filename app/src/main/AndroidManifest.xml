@@ -30,22 +30,24 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".DetailsActivity" />
+        <activity android:name=".PlaybackOverlayActivity" />
+        <activity android:name=".BrowseErrorActivity" />
         <activity
-            android:name=".RegionActivity"
+            android:name=".RegionActivity_"
             android:label="@string/title_activity_region"
-            android:parentActivityName=".GlobeActivity" >
+            android:parentActivityName=".GlobeActivity_" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nasa.jpl.marstv.GlobeActivity" />
+                android:value="gov.nasa.jpl.marstv.GlobeActivity_" />
         </activity>
-
         <activity
-            android:name=".SurfaceActivity"
+            android:name=".SurfaceActivity_"
             android:label="@string/title_activity_surface"
-            android:parentActivityName=".RegionActivity" >
+            android:parentActivityName=".RegionActivity_" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nasa.jpl.marstv.RegionActivity" />
+                android:value="gov.nasa.jpl.marstv.RegionActivity_" />
         </activity>
     </application>
 
