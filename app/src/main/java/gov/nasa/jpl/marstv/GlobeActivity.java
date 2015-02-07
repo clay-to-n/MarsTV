@@ -22,7 +22,7 @@ import org.androidannotations.annotations.EActivity;
 
 
 /*
- * MainActivity class that loads MainFragment
+ * MainActivity class
  */
 @EActivity(R.layout.activity_globe)
 public class GlobeActivity extends Activity {
