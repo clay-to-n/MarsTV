@@ -22,12 +22,8 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.InputDevice;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.widget.Toast;
 
-import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
 
@@ -63,7 +59,7 @@ public class GlobeActivity extends Activity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(new LessonOneRenderer());
+            mGLSurfaceView.setRenderer(new GlobeRenderer());
         }
         else
         {
