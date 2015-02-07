@@ -26,6 +26,9 @@ import android.view.KeyEvent;
 
 import org.androidannotations.annotations.EActivity;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 
 /*
  * MainActivity class
@@ -57,6 +60,29 @@ public class GlobeActivity extends Activity {
 
             // Request an OpenGL ES 2.0 compatible context.
             mGLSurfaceView.setEGLContextClientVersion(2);
+
+            //read json
+            String json = null;
+            try {
+
+                InputStream is = getApplicationContext().getAssets().open("MarsPlanet.json");
+
+                int size = is.available();
+
+                byte[] buffer = new byte[size];
+
+                is.read(buffer);
+
+                is.close();
+
+                json = new String(buffer, "UTF-8");
+
+                System.out.println(json);
+
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
             // Set the renderer to our demo renderer, defined below.
             mGLSurfaceView.setRenderer(new GlobeRenderer());
