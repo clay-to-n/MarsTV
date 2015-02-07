@@ -67,8 +67,8 @@ public class SurfaceActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //return super.onKeyDown(keyCode, event);
-        if(event.getKeyCode()==KeyEvent.KEYCODE_BUTTON_A) {
-            Intent intent = new Intent(this, RegionActivity_.class);
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BUTTON_B) {
+            Intent intent = new Intent(this, GlobeActivity_.class);
             startActivity(intent);
             return true;
         }

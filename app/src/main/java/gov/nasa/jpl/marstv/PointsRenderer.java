@@ -48,11 +48,13 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
     /** This will be used to pass in model color information. */
     private int mColorHandle;
 
+    private int mPointSizeHandle;
+
     /** How many bytes per float. */
     private final int mBytesPerFloat = 4;
 
     /** How many elements per vertex. */
-    private final int mStrideBytes = 7 * mBytesPerFloat;
+    private final int mStrideBytes = 8 * mBytesPerFloat;
 
     /** Offset of the position data. */
     private final int mPositionOffset = 0;
@@ -66,6 +68,12 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
     /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
 
+    private final int mPointSizeOffset = 7;
+    /* Point Size? */
+    private final int mPointSizeDataSize = 1;
+
+
+    private final float POINTSIZE = 10.0f;
     /**
      * Initialize the model data.
      */
@@ -79,12 +87,15 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
                 // R, G, B, A
                 -0.5f, -0.25f, 0.0f,
                 1.0f, 0.0f, 0.0f, 1.0f,
+                POINTSIZE,
 
                 0.5f, -0.25f, 0.0f,
                 0.0f, 0.0f, 1.0f, 1.0f,
+                POINTSIZE,
 
                 0.0f, 0.559016994f, 0.0f,
-                0.0f, 1.0f, 0.0f, 1.0f};
+                0.0f, 1.0f, 0.0f, 1.0f,
+                POINTSIZE};
 
         // This triangle is yellow, cyan, and magenta.
         final float[] triangle2VerticesData = {
@@ -92,12 +103,15 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
                 // R, G, B, A
                 -0.5f, -0.25f, 0.0f,
                 1.0f, 1.0f, 0.0f, 1.0f,
+                POINTSIZE,
 
                 0.5f, -0.25f, 0.0f,
                 0.0f, 1.0f, 1.0f, 1.0f,
+                POINTSIZE,
 
                 0.0f, 0.559016994f, 0.0f,
-                1.0f, 0.0f, 1.0f, 1.0f};
+                1.0f, 0.0f, 1.0f, 1.0f,
+                POINTSIZE};
 
         // This triangle is white, gray, and black.
         final float[] triangle3VerticesData = {
@@ -105,12 +119,15 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
                 // R, G, B, A
                 -0.5f, -0.25f, 0.0f,
                 1.0f, 1.0f, 1.0f, 1.0f,
+                POINTSIZE,
 
                 0.5f, -0.25f, 0.0f,
                 0.5f, 0.5f, 0.5f, 1.0f,
+                POINTSIZE,
 
                 0.0f, 0.559016994f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f};
+                0.0f, 0.0f, 0.0f, 1.0f,
+                POINTSIZE};
 
         // Initialize the buffers.
         mTriangle1Vertices = ByteBuffer.allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
@@ -156,6 +173,7 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
 
                         + "attribute vec4 a_Position;     \n"		// Per-vertex position information we will pass in.
                         + "attribute vec4 a_Color;        \n"		// Per-vertex color information we will pass in.
+                        + "attribute float a_PointSize;    \n"
 
                         + "varying vec4 v_Color;          \n"		// This will be passed into the fragment shader.
 
@@ -165,6 +183,7 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
                         // It will be interpolated across the triangle.
                         + "   gl_Position = u_MVPMatrix   \n" 	// gl_Position is a special variable used to store the final position.
                         + "               * a_Position;   \n"     // Multiply the vertex by the matrix to get the final point in
+                        + "   gl_PointSize = a_PointSize; \n"
                         + "}                              \n";    // normalized screen coordinates.
 
         final String fragmentShader =
@@ -247,6 +266,8 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
             // Bind attributes
             GLES20.glBindAttribLocation(programHandle, 0, "a_Position");
             GLES20.glBindAttribLocation(programHandle, 1, "a_Color");
+            GLES20.glBindAttribLocation(programHandle, 2, "a_PointSize");
+
 
             // Link the two shaders together into a program.
             GLES20.glLinkProgram(programHandle);
@@ -272,6 +293,7 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
         mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
         mPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         mColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
+        mPointSizeHandle = GLES20.glGetAttribLocation(programHandle, "a_PointSize");
 
         // Tell OpenGL to use this program when rendering.
         GLES20.glUseProgram(programHandle);
@@ -308,21 +330,21 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
         // Draw the triangle facing straight on.
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawTriangle(mTriangle1Vertices);
+        drawPoints(mTriangle1Vertices);
 
         // Draw one translated a bit down and rotated to be flat on the ground.
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 0.0f, -1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, 90.0f, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawTriangle(mTriangle2Vertices);
+        drawPoints(mTriangle2Vertices);
 
         // Draw one translated a bit to the right and rotated to be facing to the left.
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawTriangle(mTriangle3Vertices);
+        drawPoints(mTriangle3Vertices);
     }
 
     /**
@@ -356,5 +378,41 @@ public class PointsRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+    }
+
+    private void drawPoints(final FloatBuffer pointsBuffer)
+    {
+        // Pass in the position information
+        pointsBuffer.position(mPositionOffset);
+        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
+                mStrideBytes, pointsBuffer);
+
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+        // Pass in the color information
+        pointsBuffer.position(mColorOffset);
+        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
+                mStrideBytes, pointsBuffer);
+
+        GLES20.glEnableVertexAttribArray(mColorHandle);
+
+        // Pass in the point size information
+        pointsBuffer.position(mPointSizeOffset);
+        GLES20.glVertexAttribPointer(mPointSizeHandle, mPointSizeDataSize, GLES20.GL_FLOAT, false,
+                mStrideBytes, pointsBuffer);
+
+        GLES20.glEnableVertexAttribArray(mPointSizeHandle);
+
+
+
+        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
+        // (which currently contains model * view).
+        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+
+        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
+        // (which now contains model * view * projection).
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 3);
     }
 }
