@@ -95,7 +95,7 @@ public class GlobeActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(event.getKeyCode()==KeyEvent.KEYCODE_BUTTON_A) {
             Log.e("GlobeActivity", "A PRESSED DOWN");
-            Intent intent = new Intent(this, RegionActivity_.class);
+            Intent intent = new Intent(this, SurfaceActivity_.class);
             startActivity(intent);
             return true;
         }
