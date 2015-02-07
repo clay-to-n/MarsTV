@@ -1,5 +1,6 @@
 package gov.nasa.jpl.marstv;
 
+import android.app.Activity;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -25,7 +26,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created by mrComputer on 2/7/15.
  */
-public class GlobeRenderer implements GLSurfaceView.Renderer {
+public class GlobeRenderer extends Activity implements GLSurfaceView.Renderer {
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
@@ -84,25 +85,27 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
     public GlobeRenderer()
     {
 
-//        String json = null;
-//        try {
-//
-//            InputStream is = App.getContext().getAssets().open("file_name.json");
-//
-//            int size = is.available();
-//
-//            byte[] buffer = new byte[size];
-//
-//            is.read(buffer);
-//
-//            is.close();
-//
-//            json = new String(buffer, "UTF-8");
-//
-//
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
+        String json = null;
+        try {
+
+            InputStream is = getApplicationContext().getAssets().open("MarsPlanet.json");
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+            System.out.println(json);
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
         // This triangle is red, green, and blue.
         final float[] triangle1VerticesData = {
