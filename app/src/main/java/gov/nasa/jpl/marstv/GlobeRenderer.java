@@ -379,7 +379,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
 
     private void drawMarsGlobe(final DoubleBuffer marsVertsBuffer)
     {
-        System.out.println(marsVertsBuffer);
+        System.out.println(mPositionHandle);
         // Pass in the position information
         marsVertsBuffer.position(mPositionOffset);
         GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
@@ -388,11 +388,11 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
         // Pass in the color information
-        marsVertsBuffer.position(mColorOffset);
-        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
-                mStrideBytes, marsVertsBuffer);
-
-        GLES20.glEnableVertexAttribArray(mColorHandle);
+//        marsVertsBuffer.position(mColorOffset);
+//        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
+//                mStrideBytes, marsVertsBuffer);
+//
+//        GLES20.glEnableVertexAttribArray(mColorHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
