@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -68,7 +69,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
     private final int mBytesPerDouble = 8;
 
     /** How many elements per vertex. */
-    private final int mStrideBytes = 7 * mBytesPerFloat;
+    private final int mStrideBytes = 4 * mBytesPerFloat;
 
     /** Offset of the position data. */
     private final int mPositionOffset = 0;
@@ -81,6 +82,9 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
 
     /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
+
+    ArrayList<float[]> tmpTriangles = new ArrayList<float[]>();
+    ArrayList<FloatBuffer> floatBuffers = new ArrayList<FloatBuffer>();
 
     /**
      * Initialize the model data.
@@ -127,6 +131,33 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
                 0.0f, 0.559016994f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f};
 
+
+
+        int j = 0;
+        for (int i = 0; i < marsVerts.length; i=i+9) {
+            float[] tmpFloat = {
+                    // X, Y, Z,
+                    // R, G, B, A
+                    (float)marsVerts[i], (float)marsVerts[i+1], (float)marsVerts[i+2],
+                    1.0f, 1.0f, 1.0f, 1.0f,
+
+                    (float)marsVerts[i+3], (float)marsVerts[i+4], (float)marsVerts[i+5],
+                    0.5f, 0.5f, 0.5f, 1.0f,
+
+                    (float)marsVerts[i+6], (float)marsVerts[i+7], (float)marsVerts[i+8],
+                    0.0f, 0.0f, 0.0f, 1.0f};
+
+            tmpTriangles.add(tmpFloat);
+//            tmpTriangles[j] = tmpFloat;
+            j++;
+
+            FloatBuffer TriangleTempVertices = ByteBuffer.allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
+                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
+            TriangleTempVertices.put(tmpFloat).position(0);
+//            floatBuffers[j] = TriangleTempVertices;
+            floatBuffers.add(TriangleTempVertices);
+        }
+
         // Initialize the buffers.
         mTriangle1Vertices = ByteBuffer.allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -143,13 +174,13 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
         marsCoordsBuffer = ByteBuffer.allocateDirect(marsCoords.length * mBytesPerDouble)
                 .order(ByteOrder.nativeOrder()).asDoubleBuffer();
 
-        marsCoordsBuffer.put(marsVerts).position(0);
+        marsCoordsBuffer.put(marsCoords).position(0);
 // set input data to arrays
-        GLES10.glVertexPointer(3, 5126, 0, marsVertsBuffer);
-        GLES10.glTexCoordPointer(2, 5126, 0, marsCoordsBuffer);
+//        GLES10.glVertexPointer(3, 5126, 0, marsVertsBuffer);
+//        GLES10.glTexCoordPointer(2, 5126, 0, marsCoordsBuffer);
 
 // draw data
-        GLES10.glDrawArrays( GLES10.GL_TRIANGLES, 0, 5952);
+//        GLES10.glDrawArrays( GLES10.GL_TRIANGLES, 0, 5952);
 
         mTriangle1Vertices.put(triangle1VerticesData).position(0);
         mTriangle2Vertices.put(triangle2VerticesData).position(0);
@@ -340,7 +371,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
 //        drawTriangle(mTriangle1Vertices);
-//        drawMarsGlobe(marsVerts);
+//        drawMarsGlobe(marsVertsBuffer);
 
         // Draw one translated a bit down and rotated to be flat on the ground.
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -355,6 +386,14 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
         Matrix.rotateM(mModelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
         drawTriangle(mTriangle3Vertices);
+
+        for (int i = 0; i < floatBuffers.size(); i++) {
+            Matrix.setIdentityM(mModelMatrix, 0);
+            Matrix.translateM(mModelMatrix, 0, 1.0f, 0.0f, 0.0f);
+            Matrix.rotateM(mModelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
+            Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+            drawTriangle(floatBuffers.get(i));
+        }
     }
 
     /**
@@ -392,13 +431,14 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
 
     private void drawMarsGlobe(final DoubleBuffer marsVertsBuffer)
     {
-        System.out.println(mPositionHandle);
         // Pass in the position information
-        marsVertsBuffer.position(mPositionOffset);
-        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
-                mStrideBytes, marsVertsBuffer);
+//        marsVertsBuffer.position(mPositionOffset);
+//        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
+//                mStrideBytes, marsVertsBuffer);
+//
+//        GLES20.glEnableVertexAttribArray(mPositionHandle);
 
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
+
 
         // Pass in the color information
 //        marsVertsBuffer.position(mColorOffset);
@@ -416,6 +456,11 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+        // set input data to arrays
+        GLES10.glVertexPointer(3, 5126, 0, marsVertsBuffer);
+        GLES10.glTexCoordPointer(2, 5126, 0, marsCoordsBuffer);
+
+// draw data
+        GLES10.glDrawArrays( GLES10.GL_TRIANGLES, 0, 5952);
     }
 }
