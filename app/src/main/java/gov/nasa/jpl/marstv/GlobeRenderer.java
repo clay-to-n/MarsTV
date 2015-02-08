@@ -50,7 +50,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer mTriangle2Vertices;
     private final FloatBuffer mTriangle3Vertices;
 
-//    private final DoubleBuffer marsVerts;
+    private final DoubleBuffer marsVertsBuffer;
 
     /** This will be used to pass in the transformation matrix. */
     private int mMVPMatrixHandle;
@@ -63,6 +63,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
 
     /** How many bytes per float. */
     private final int mBytesPerFloat = 4;
+    private final int mBytesPerDouble = 8;
 
     /** How many elements per vertex. */
     private final int mStrideBytes = 7 * mBytesPerFloat;
@@ -82,7 +83,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public GlobeRenderer()
+    public GlobeRenderer(double[] marsVerts, double[] marsCoords)
     {
 
         // This triangle is red, green, and blue.
@@ -132,10 +133,10 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
         mTriangle3Vertices = ByteBuffer.allocateDirect(triangle3VerticesData.length * mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-//        marsVerts = ByteBuffer.allocateDirect(MarsPlanetVerts.length * mBytesPerFloat)
-//                .order(ByteOrder.nativeOrder()).asDoubleBuffer();
+        marsVertsBuffer = ByteBuffer.allocateDirect(marsVerts.length * mBytesPerDouble)
+                .order(ByteOrder.nativeOrder()).asDoubleBuffer();
 
-//        marsVerts.put(MarsPlanetVerts).position(0);
+        marsVertsBuffer.put(marsVerts).position(0);
 
         mTriangle1Vertices.put(triangle1VerticesData).position(0);
         mTriangle2Vertices.put(triangle2VerticesData).position(0);
@@ -378,6 +379,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
 
     private void drawMarsGlobe(final DoubleBuffer marsVertsBuffer)
     {
+        System.out.println(marsVertsBuffer);
         // Pass in the position information
         marsVertsBuffer.position(mPositionOffset);
         GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,

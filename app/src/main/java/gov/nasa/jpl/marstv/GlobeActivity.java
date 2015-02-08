@@ -56,6 +56,9 @@ public class GlobeActivity extends Activity {
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
 
+        double[] marsVerts;
+        double[] marsCoords;
+
         System.out.println(configurationInfo.reqGlEsVersion);
         if (supportsEs2)
         {
@@ -85,37 +88,27 @@ public class GlobeActivity extends Activity {
                 actualjson = new JSONObject(json);
 
                 JSONArray vertsArray = actualjson.getJSONArray("verts");
-                double[] marsVerts = new double[vertsArray.length()];
+                marsVerts = new double[vertsArray.length()];
 
                 for (int i = 0; i < marsVerts.length; i++){
                     marsVerts[i] = vertsArray.getDouble(i);
                 }
 
                 JSONArray coordsArray = actualjson.getJSONArray("textCords");
-                double[] marsCoords = new double[coordsArray.length()];
+                marsCoords = new double[coordsArray.length()];
 
                 for (int i = 0; i < marsCoords.length; i++){
                     marsCoords[i] = coordsArray.getDouble(i);
                 }
-//                double[] verts = (double[]) actualjson.get("verts");
-//                double[] textCords = (double[]) actualjson.get("textCords");
 
-                for (int i = 0; i < marsVerts.length; i++){
-                    System.out.println(marsVerts[i]);
-                }
-//                System.out.println(marsVerts[0]);
-//                System.out.println(marsCoords[0]);
-
-
+                // Set the renderer to our demo renderer, defined below.
+                mGLSurfaceView.setRenderer(new GlobeRenderer(marsVerts, marsCoords));
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-
-            // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(new GlobeRenderer());
         }
         else
         {
