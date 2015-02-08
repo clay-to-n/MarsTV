@@ -2,6 +2,7 @@ package gov.nasa.jpl.marstv;
 
 import android.app.Activity;
 import android.opengl.GLES20;
+import android.opengl.GLES10;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
@@ -51,6 +52,7 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer mTriangle3Vertices;
 
     private final DoubleBuffer marsVertsBuffer;
+    private final DoubleBuffer marsCoordsBuffer;
 
     /** This will be used to pass in the transformation matrix. */
     private int mMVPMatrixHandle;
@@ -137,6 +139,17 @@ public class GlobeRenderer implements GLSurfaceView.Renderer {
                 .order(ByteOrder.nativeOrder()).asDoubleBuffer();
 
         marsVertsBuffer.put(marsVerts).position(0);
+
+        marsCoordsBuffer = ByteBuffer.allocateDirect(marsCoords.length * mBytesPerDouble)
+                .order(ByteOrder.nativeOrder()).asDoubleBuffer();
+
+        marsCoordsBuffer.put(marsVerts).position(0);
+// set input data to arrays
+        GLES10.glVertexPointer(3, 5126, 0, marsVertsBuffer);
+        GLES10.glTexCoordPointer(2, 5126, 0, marsCoordsBuffer);
+
+// draw data
+        GLES10.glDrawArrays( GLES10.GL_TRIANGLES, 0, 5952);
 
         mTriangle1Vertices.put(triangle1VerticesData).position(0);
         mTriangle2Vertices.put(triangle2VerticesData).position(0);
