@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import org.androidannotations.annotations.EActivity;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +64,8 @@ public class GlobeActivity extends Activity {
             // Request an OpenGL ES 2.0 compatible context.
             mGLSurfaceView.setEGLContextClientVersion(2);
 
+            JSONObject actualjson;
+
             //read json
             String json = null;
             try {
@@ -79,9 +82,29 @@ public class GlobeActivity extends Activity {
 
                 json = new String(buffer, "UTF-8");
 
-                JSONObject actualjson = new JSONObject(json);
+                actualjson = new JSONObject(json);
 
-                System.out.println(actualjson);
+                JSONArray vertsArray = actualjson.getJSONArray("verts");
+                double[] marsVerts = new double[vertsArray.length()];
+
+                for (int i = 0; i < marsVerts.length; i++){
+                    marsVerts[i] = vertsArray.getDouble(i);
+                }
+
+                JSONArray coordsArray = actualjson.getJSONArray("textCords");
+                double[] marsCoords = new double[coordsArray.length()];
+
+                for (int i = 0; i < marsCoords.length; i++){
+                    marsCoords[i] = coordsArray.getDouble(i);
+                }
+//                double[] verts = (double[]) actualjson.get("verts");
+//                double[] textCords = (double[]) actualjson.get("textCords");
+
+                for (int i = 0; i < marsVerts.length; i++){
+                    System.out.println(marsVerts[i]);
+                }
+//                System.out.println(marsVerts[0]);
+//                System.out.println(marsCoords[0]);
 
 
             } catch (IOException ex) {
@@ -89,6 +112,7 @@ public class GlobeActivity extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
 
             // Set the renderer to our demo renderer, defined below.
             mGLSurfaceView.setRenderer(new GlobeRenderer());
